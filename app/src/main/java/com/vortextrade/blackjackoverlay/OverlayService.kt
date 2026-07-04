@@ -42,7 +42,7 @@ class OverlayService : Service() {
 
     private var mediaProjection: MediaProjection? = null
     private var capture: ScreenCaptureManager? = null
-    private val advisor = BlackjackAdvisor()
+    private val advisor by lazy { BlackjackAdvisor(applicationContext) }
 
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.Main)
 

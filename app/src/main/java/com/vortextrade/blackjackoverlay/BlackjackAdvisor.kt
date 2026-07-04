@@ -1,5 +1,6 @@
 package com.vortextrade.blackjackoverlay
 
+import android.content.Context
 import android.graphics.Bitmap
 import android.util.Base64
 import com.anthropic.client.AnthropicClient
@@ -18,15 +19,19 @@ import java.io.ByteArrayOutputStream
  * overlay-sized play recommendation. One [analyze] call == one API request, fired only when
  * the user taps "Calculate Now".
  */
-class BlackjackAdvisor {
+class BlackjackAdvisor(private val appContext: Context) {
 
-    private val client: AnthropicClient = AnthropicOkHttpClient.builder()
-        .apiKey(BuildConfig.ANTHROPIC_API_KEY)
-        .build()
+    // Built lazily from the key stored on-device, so the client picks up a key
+    // entered in the app without needing a rebuild.
+    private val client: AnthropicClient by lazy {
+        AnthropicOkHttpClient.builder()
+            .apiKey(ApiKeyStore.get(appContext))
+            .build()
+    }
 
     suspend fun analyze(frame: Bitmap): String = withContext(Dispatchers.IO) {
-        if (BuildConfig.ANTHROPIC_API_KEY.isBlank()) {
-            return@withContext "No API key set. Add ANTHROPIC_API_KEY to local.properties and rebuild."
+        if (!ApiKeyStore.hasKey(appContext)) {
+            return@withContext "No API key set. Open the app and paste your Anthropic API key."
         }
 
         val base64Image = frame.toJpegBase64(quality = 70)

@@ -1,0 +1,57 @@
+name: Build APK
+
+# Builds an installable debug APK on every push to the feature branch and on
+# manual dispatch, uploads it as a workflow artifact, and publishes it to a
+# "debug-latest" prerelease so there is a stable download link.
+on:
+  push:
+    branches:
+      - claude/blackjack-ai-overlay-e2o2m4
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+
+      # ubuntu-latest ships the Android SDK preinstalled (ANDROID_HOME set),
+      # so no SDK download is needed.
+      - name: Set up Gradle
+        uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: "8.9"
+
+      - name: Build debug APK
+        run: gradle :app:assembleDebug --no-daemon --stacktrace
+
+      - name: Upload APK artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: blackjack-overlay-debug-apk
+          path: app/build/outputs/apk/debug/app-debug.apk
+          if-no-files-found: error
+
+      - name: Publish to debug-latest release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: debug-latest
+          name: Debug APK (latest)
+          prerelease: true
+          files: app/build/outputs/apk/debug/app-debug.apk
+          body: |
+            Auto-built debug APK of the Blackjack Overlay app.
+
+            Install: download `app-debug.apk`, open it on your Android phone,
+            and allow "install from unknown sources" when prompted.
+            Then open the app, paste your Anthropic API key, and start the overlay.

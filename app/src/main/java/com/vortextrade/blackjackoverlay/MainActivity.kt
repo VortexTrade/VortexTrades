@@ -10,6 +10,7 @@ import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
 import android.widget.Button
+import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
@@ -50,6 +51,15 @@ class MainActivity : AppCompatActivity() {
 
         statusText = findViewById(R.id.statusText)
         projectionManager = getSystemService(Context.MEDIA_PROJECTION_SERVICE) as MediaProjectionManager
+
+        val apiKeyInput = findViewById<EditText>(R.id.apiKeyInput)
+        apiKeyInput.setText(ApiKeyStore.get(this))
+
+        findViewById<Button>(R.id.saveKeyButton).setOnClickListener {
+            ApiKeyStore.set(this, apiKeyInput.text.toString())
+            Toast.makeText(this, "API key saved", Toast.LENGTH_SHORT).show()
+            warnIfNoApiKey()
+        }
 
         findViewById<Button>(R.id.startButton).setOnClickListener { onStartClicked() }
         findViewById<Button>(R.id.stopButton).setOnClickListener {
@@ -94,9 +104,10 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun warnIfNoApiKey() {
-        if (BuildConfig.ANTHROPIC_API_KEY.isBlank()) {
-            statusText.text =
-                "No API key configured. Add ANTHROPIC_API_KEY to local.properties and rebuild."
+        statusText.text = if (ApiKeyStore.hasKey(this)) {
+            "Ready. Press Start Overlay."
+        } else {
+            "Paste your Anthropic API key and press Save."
         }
     }
 }

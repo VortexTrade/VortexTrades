@@ -19,8 +19,30 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
-        android:text="Grant overlay + screen-capture permission, then start."
-        android:layout_marginBottom="28dp" />
+        android:text="Paste your Anthropic API key, then start the overlay."
+        android:layout_marginBottom="20dp" />
+
+    <EditText
+        android:id="@+id/apiKeyInput"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="sk-ant-..."
+        android:inputType="textVisiblePassword"
+        android:autofillHints="password"
+        android:maxLines="1" />
+
+    <Button
+        android:id="@+id/saveKeyButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:text="Save API Key" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginVertical="20dp"
+        android:background="#33000000" />
 
     <Button
         android:id="@+id/startButton"

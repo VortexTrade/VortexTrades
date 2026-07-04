@@ -43,21 +43,35 @@ To change models, edit one line in
 const val MODEL = "claude-haiku-4-5"   // → "claude-sonnet-5" for stronger reasoning
 ```
 
-## Setup
+## Install the prebuilt APK (no Android Studio needed)
 
-1. Open the project in **Android Studio** (Giraffe or newer). It will generate the Gradle
-   wrapper and download dependencies. (`minSdk 26`, `compileSdk 34`.)
-2. Copy `local.properties.example` to `local.properties` and set your key:
-   ```properties
-   sdk.dir=/path/to/Android/sdk
-   ANTHROPIC_API_KEY=sk-ant-...
-   ```
-   `local.properties` is git-ignored, and the key is injected into `BuildConfig` at build time
-   — it is never committed to source.
-3. Build and run on a device (Android 8.0+).
-4. In the app: **Start Overlay** → grant "Display over other apps" → press Start again →
-   approve the screen-capture prompt. The floating advisor appears.
-5. Drag it wherever you like. When cards are dealt, tap **Calculate Now**.
+Every push to the feature branch builds an installable **debug APK** via GitHub Actions
+(`.github/workflows/build-apk.yml`) and publishes it to the **`debug-latest`** release.
+
+1. Go to the repo's **Releases** page → **Debug APK (latest)** → download `app-debug.apk`.
+   (Or: **Actions** tab → latest "Build APK" run → **Artifacts** → `blackjack-overlay-debug-apk`.)
+2. Copy `app-debug.apk` to your Android phone and open it. Allow **"install from unknown
+   sources"** when prompted.
+3. Open the app, paste your **Anthropic API key**, tap **Save API Key**.
+4. **Start Overlay** → grant "Display over other apps" → press Start again → approve the
+   screen-capture prompt. The floating advisor appears.
+5. Drag it anywhere. When cards are dealt, tap **Calculate Now**.
+
+The API key is entered **in the app** and stored on-device, so the same prebuilt APK works
+for anyone — nothing is hardcoded into the binary.
+
+## Building it yourself
+
+You don't need Android Studio — any machine with a JDK works:
+
+```bash
+# Requires the Android SDK; on CI the runner already has it.
+gradle :app:assembleDebug          # output: app/build/outputs/apk/debug/app-debug.apk
+```
+
+If you'd rather bake the key in at build time instead of typing it in the app, put it in
+`local.properties` (copy from `local.properties.example`) — it's git-ignored and injected into
+`BuildConfig` at build time. The in-app key always takes precedence if both are set.
 
 ## Security & scope notes
 
