@@ -1,0 +1,8 @@
+# Copy this file to `local.properties` and fill in your values.
+# `local.properties` is git-ignored so your key never gets committed.
+
+# Path to your Android SDK (Android Studio sets this automatically).
+sdk.dir=/path/to/Android/sdk
+
+# Your Anthropic API key — used at build time to populate BuildConfig.ANTHROPIC_API_KEY.
+ANTHROPIC_API_KEY=sk-ant-xxxxxxxxxxxxxxxxxxxxxxxx
