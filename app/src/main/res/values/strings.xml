@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">Blackjack Overlay</string>
+    <string name="overlay_title">Blackjack Advisor</string>
+    <string name="calculate_now">Calculate Now</string>
+    <string name="close">✕</string>
+    <string name="hint_idle">Deal the cards, then tap “Calculate Now”.</string>
+    <string name="notif_channel_name">Blackjack Overlay</string>
+    <string name="notif_text">Overlay running — tap the floating window to get advice.</string>
+</resources>
